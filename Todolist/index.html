@@ -42,7 +42,7 @@
                     handleclick:function(){
                         // 实现删除，需要父组件删除自身数据，实现子组件和父组件得通信
                         // 子组件向父组件通信是发布订阅模式实现
-                        this.$emit('delete',this.index)
+                        this.$emit('delete',this.index);
                     }
                 }
             })
