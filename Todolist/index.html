@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>TodoList</title>
+        <script src="./vue.js"></script>
+    </head>
+
+    <body>
+        <div id="root">
+            <div>
+                <input v-model="inputValue"/>
+                <button @click="handlesubmit">提交</button>
+            </div>
+            <ul>
+                <!-- 组件拆分和维护 -->
+                <!-- <li v-for="(item,index) of list" :key="index">
+                     {{item}} 
+                </li>  -->
+
+            <!-- 通过属性得形式来进行子组件传值，父组件向组建是通过属性来实现得 -->
+            <!-- @就是v-on 监听操作 -->
+                <todo-item 
+                v-for="(item,index) of list" 
+                :key="index"
+                :content="item"
+                :index="index"
+                @delete="handledelete"
+                >
+                </todo-item>
+            </ul>
+        </div>
+       
+     
+        <script>
+            // 全局组件,每个组件其实也就是一个实例，所以每个实例可以添加方法操作，就像下面得new Vue 一样，可以有data,methods等属性
+            Vue.component( 'todo-item',{
+                // 接收到的
+                props:['content','index'],
+                template:'<li @click="handleclick">{{content}}  {{index}}<li>',
+                methods:{
+                    handleclick:function(){
+                        // 实现删除，需要父组件删除自身数据，实现子组件和父组件得通信
+                        // 子组件向父组件通信是发布订阅模式实现
+                        this.$emit('delete',this.index)
+                    }
+                }
+            })
+
+            // 定义局部组件时候，需要进行注册
+            // var TodoItem ={
+            //     template:'<li>item</li>'
+            // }
+
+            new Vue({
+                el:"#root",
+                // 局部组件进行注册
+                // components:{
+                //     "todo-item": TodoItem
+                // },
+
+                // 如果没有实例template，直接用挂载点用作模板
+                data:{
+                    inputValue:'',
+                    list:[],
+                },
+
+                methods:{
+                    handlesubmit:function(){
+                        if(this.inputValue==''){
+                            alert("传值为空");
+                        }
+                        else{
+                        this.list.push(this.inputValue);
+                        this.inputValue=''
+                        }
+                       
+                    },
+                    handledelete:function(index){
+                    // alert(index);
+                    this.list.splice(index,1);
+                }
+                },
+                
+            })
+        </script>
+
+    </body>
+</html>
